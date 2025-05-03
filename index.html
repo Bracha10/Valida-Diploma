@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Verificação de Certificados EDUQ</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #003366; }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; }
+        .result { margin-top: 20px; padding: 10px; background: #e0ffe0; border: 1px solid #00aa00; display: none; }
+        footer { text-align: center; margin-top: 30px; font-size: 0.9em; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Verificação de Certificados EDUQ</h1>
+        <label for="cpf">Digite o CPF do aluno:</label>
+        <input type="text" id="cpf" placeholder="Ex: 000.000.000-00">
+        <button onclick="verificar()">Verificar</button>
+        <div id="resultado" class="result"></div>
+    </div>
+    <footer>CNPJ: 11.103.590/0001-02 | EDUQ Verificador Oficial</footer>
+
+    <script>
+        function verificar() {
+            const cpf = document.getElementById('cpf').value;
+            const resultado = document.getElementById('resultado');
+
+            const dados = {
+                "317.762.898-03": "NILZA PEREIRA BASTOS – Curso: ENSINO MÉDIO – Modalidade: EJA – Registro: Reg 512 – Folha 128 – Livro D0044 – Conclusão: 26/11/2024",
+                "000.000.000-00": "Exemplo de certificado válido para testes."
+            };
+
+            if (dados[cpf]) {
+                resultado.innerHTML = `<strong>Certificado encontrado:</strong><br>${dados[cpf]}`;
+                resultado.style.display = 'block';
+                resultado.style.backgroundColor = '#e0ffe0';
+                resultado.style.border = '1px solid #00aa00';
+            } else {
+                resultado.innerHTML = "❌ Certificado não encontrado. Verifique o CPF digitado.";
+                resultado.style.display = 'block';
+                resultado.style.backgroundColor = '#ffe0e0';
+                resultado.style.border = '1px solid #aa0000';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel EDUQ - Gerador de Certificados</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f3f3f3; padding: 20px; }
+    .container { max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #003366; }
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    input, textarea, button { width: 100%; padding: 10px; margin-top: 5px; }
+    #certificado { display: none; background: #fff; padding: 20px; margin-top: 30px; border: 1px solid #ccc; }
+    #certificado h2 { text-align: center; color: #003366; }
+    .qr-code { text-align: center; margin-top: 20px; }
+    footer { text-align: center; font-size: 0.9em; margin-top: 20px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Painel EDUQ - Gerador de Certificados</h1>
+
+    <label>Nome do Aluno</label>
+    <input type="text" id="nome" placeholder="Ex: Nilza Pereira Bastos">
+
+    <label>CPF</label>
+    <input type="text" id="cpf" placeholder="Ex: 000.000.000-00">
+
+    <label>Curso</label>
+    <input type="text" id="curso" value="ENSINO MÉDIO">
+
+    <label>Data de Conclusão</label>
+    <input type="text" id="data" value="26/11/2024">
+
+    <label>Registro</label>
+    <textarea id="registro">Reg 512 – Folha 128 – Livro D0044</textarea>
+
+    <button onclick="gerarCertificado()">Gerar Certificado</button>
+    <button onclick="baixarPDF()">Baixar PDF</button>
+
+    <div id="certificado">
+      <h2>Certificado EDUQ</h2>
+      <p><strong>Nome:</strong> <span id="outNome"></span></p>
+      <p><strong>CPF:</strong> <span id="outCPF"></span></p>
+      <p><strong>Curso:</strong> <span id="outCurso"></span></p>
+      <p><strong>Data de Conclusão:</strong> <span id="outData"></span></p>
+      <p><strong>Status:</strong> <span id="outRegistro"></span></p>
+      <div class="qr-code">
+        <img id="qrImage" src="certificado_qrcode.png" width="150">
+      </div>
+      <footer>CNPJ: 11.103.590/0001-02 | EDUQ</footer>
+    </div>
+  </div>
+
+  <script>
+    function gerarCertificado() {
+      document.getElementById('outNome').textContent = document.getElementById('nome').value;
+      document.getElementById('outCPF').textContent = document.getElementById('cpf').value;
+      document.getElementById('outCurso').textContent = document.getElementById('curso').value;
+      document.getElementById('outData').textContent = document.getElementById('data').value;
+      document.getElementById('outRegistro').textContent = document.getElementById('registro').value;
+      document.getElementById('certificado').style.display = 'block';
+    }
+
+    function baixarPDF() {
+      const element = document.getElementById('certificado');
+      const opt = {
+        margin:       0.5,
+        filename:     'certificado_eduq.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+  </script>
+</body>
+</html>

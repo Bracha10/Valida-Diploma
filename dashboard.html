@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard EDUQ</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="auth.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 30px; }
+    .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #003366; }
+    .logout { float: right; background: #c00; color: white; border: none; padding: 8px 16px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <button class="logout" onclick="logout()">Sair</button>
+  <div class="container">
+    <h1>Dashboard de Certificados</h1>
+    <canvas id="graficoCertificados" width="700" height="400"></canvas>
+  </div>
+
+  <script src="logout.js"></script>
+  <script>
+    const firebaseConfig = {
+      // cole seu firebaseConfig aqui
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = 'login.html';
+      });
+    }
+
+    const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const contagem = new Array(12).fill(0);
+    const anoAtual = new Date().getFullYear();
+
+    db.collection("certificados").get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const data = doc.data().timestamp?.toDate?.() || new Date();
+        if (data.getFullYear() === anoAtual) {
+          contagem[data.getMonth()]++;
+        }
+      });
+
+      const ctx = document.getElementById('graficoCertificados').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: meses,
+          datasets: [{
+            label: 'Certificados emitidos em ' + anoAtual,
+            data: contagem,
+            backgroundColor: '#003366'
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

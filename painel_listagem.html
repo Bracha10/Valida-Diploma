@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Listagem de Certificados EDUQ</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="auth.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f8f8; padding: 30px; }
+    .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #003366; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background: #003366; color: white; }
+    #busca { padding: 10px; width: 100%; margin-bottom: 20px; }
+    .logout { float: right; background: #c00; color: white; border: none; padding: 8px 16px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <button class="logout" onclick="logout()">Sair</button>
+  <div class="container">
+    <h1>Certificados Emitidos</h1>
+    <input type="text" id="busca" onkeyup="filtrar()" placeholder="Buscar por nome ou CPF...">
+    <table id="tabela">
+      <thead>
+        <tr><th>Nome</th><th>CPF</th><th>Curso</th><th>Data</th><th>Registro</th></tr>
+      </thead>
+      <tbody id="lista-certificados"></tbody>
+    </table>
+  </div>
+
+  <script src="logout.js"></script>
+  <script>
+    const firebaseConfig = {
+      // cole seu firebaseConfig aqui
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    db.collection("certificados").orderBy("timestamp", "desc").get()
+      .then(snapshot => {
+        const tabela = document.getElementById("lista-certificados");
+        snapshot.forEach(doc => {
+          const c = doc.data();
+          const linha = `<tr>
+            <td>${c.nome}</td>
+            <td>${c.cpf}</td>
+            <td>${c.curso}</td>
+            <td>${c.data}</td>
+            <td>${c.registro}</td>
+          </tr>`;
+          tabela.innerHTML += linha;
+        });
+      });
+
+    function filtrar() {
+      const termo = document.getElementById("busca").value.toLowerCase();
+      const linhas = document.querySelectorAll("#tabela tbody tr");
+      linhas.forEach(linha => {
+        linha.style.display = linha.innerText.toLowerCase().includes(termo) ? "" : "none";
+      });
+    }
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = 'login.html';
+      });
+    }
+  </script>
+</body>
+</html>
